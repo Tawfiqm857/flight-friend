@@ -191,6 +191,11 @@ export default function MyBookings() {
                           <p className="font-semibold text-foreground">{flight.gate || '--'}</p>
                         </div>
 
+                          <div className="text-center">
+                          <p className="text-sm text-muted-foreground mb-1">Seat</p>
+                          <p className="font-semibold text-foreground">{booking.price}</p>
+                        </div>
+
                         <ChevronRight className="w-5 h-5 text-muted-foreground hidden sm:block" />
                       </div>
                     </div>
