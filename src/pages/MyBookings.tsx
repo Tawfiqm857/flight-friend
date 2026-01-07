@@ -1,11 +1,26 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plane, Calendar, MapPin, Ticket, ChevronRight, AlertCircle } from 'lucide-react';
+import { Plane, Calendar, Ticket, ChevronRight, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/Header';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
+
+interface Flight {
+  id: string;
+  flight_number: string;
+  airline: string;
+  origin: string;
+  origin_code: string;
+  destination: string;
+  destination_code: string;
+  departure_time: string;
+  arrival_time: string;
+  status: string;
+  gate: string | null;
+  delay_minutes: number | null;
+}
 
 interface BookingWithFlight {
   id: string;
@@ -16,22 +31,10 @@ interface BookingWithFlight {
   gate: string | null;
   boarding_time: string | null;
   status: string;
-  total_price: number;
+  total_price: number | string | null;
   created_at: string;
-  flights: {
-    id: string;
-    flight_number: string;
-    airline: string;
-    origin: string;
-    origin_code: string;
-    destination: string;
-    destination_code: string;
-    departure_time: string;
-    arrival_time: string;
-    status: string;
-    gate: string | null;
-    delay_minutes: number | null;
-  };
+  // flights may be returned as an array from Supabase or as a single object depending on relationship
+  flights: Flight | Flight[] | null;
 }
 
 export default function MyBookings() {
@@ -61,7 +64,16 @@ export default function MyBookings() {
     if (error) {
       console.error('Error fetching bookings:', error);
     } else {
-      setBookings(data as BookingWithFlight[] || []);
+      console.debug('Fetched bookings:', data); // debug: inspect shape & values (remove in prod)
+
+      // Normalize flights so each booking has a single flight object (take first if array)
+      const normalized = (data || []).map((b: any) => {
+        const flights = b.flights;
+        const flight = Array.isArray(flights) ? flights[0] ?? null : flights ?? null;
+        return { ...b, flights: flight } as BookingWithFlight;
+      });
+
+      setBookings(normalized);
     }
     setLoading(false);
   };
@@ -91,7 +103,13 @@ export default function MyBookings() {
     };
   };
 
-  const formatPrice = (price: number) => `$${price.toFixed(2)}`;
+  // Robust price formatter: handles numbers, numeric strings, null/undefined
+  const formatPrice = (price: number | string | null | undefined) => {
+    if (price == null) return '--';
+    const num = typeof price === 'string' ? parseFloat(price) : Number(price);
+    if (!Number.isFinite(num)) return '--';
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+  };
 
   if (authLoading || loading) {
     return (
@@ -112,9 +130,7 @@ export default function MyBookings() {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-foreground mb-2">My Bookings</h1>
-            <p className="text-muted-foreground">
-              View and manage your flight reservations
-            </p>
+            <p className="text-muted-foreground">View and manage your flight reservations</p>
           </div>
 
           {/* Bookings list */}
@@ -124,9 +140,7 @@ export default function MyBookings() {
                 <Ticket className="w-10 h-10 text-muted-foreground" />
               </div>
               <h2 className="text-xl font-semibold text-foreground mb-2">No bookings yet</h2>
-              <p className="text-muted-foreground mb-6">
-                You haven't made any flight bookings yet
-              </p>
+              <p className="text-muted-foreground mb-6">You haven't made any flight bookings yet</p>
               <Button onClick={() => navigate('/search')}>
                 <Plane className="w-4 h-4 mr-2" />
                 Book a Flight
@@ -135,10 +149,10 @@ export default function MyBookings() {
           ) : (
             <div className="space-y-4">
               {bookings.map((booking) => {
-                const { flights: flight } = booking;
-                const departure = formatDateTime(flight.departure_time);
+                const flight = booking.flights as Flight | null;
+                const departure = flight ? formatDateTime(flight.departure_time) : { date: '--', time: '--' };
                 const statusConfig = getStatusConfig(booking.status);
-                const hasDelay = flight.delay_minutes && flight.delay_minutes > 0;
+                const hasDelay = flight && flight.delay_minutes && flight.delay_minutes > 0;
 
                 return (
                   <div
@@ -155,25 +169,25 @@ export default function MyBookings() {
                         <div>
                           <div className="flex items-center gap-3 mb-1">
                             <span className="font-bold text-lg text-foreground">
-                              {flight.origin_code} → {flight.destination_code}
+                              {flight ? `${flight.origin_code} → ${flight.destination_code}` : '--'}
                             </span>
                             <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", statusConfig.color)}>
                               {statusConfig.label}
                             </span>
                           </div>
                           <p className="text-sm text-muted-foreground">
-                            {flight.flight_number} • {booking.passenger_name}
+                            {flight ? `${flight.flight_number} • ${booking.passenger_name}` : booking.passenger_name}
                           </p>
                           {hasDelay && (
                             <div className="flex items-center gap-1 mt-1 text-destructive">
                               <AlertCircle className="w-3 h-3" />
-                              <span className="text-xs">Delayed {flight.delay_minutes} min</span>
+                              <span className="text-xs">Delayed {flight!.delay_minutes} min</span>
                             </div>
                           )}
                         </div>
                       </div>
 
-                      {/* Date and details (includes Price now) */}
+                      {/* Date and details (includes Price) */}
                       <div className="flex items-center gap-6">
                         <div className="text-center">
                           <div className="flex items-center gap-2 text-muted-foreground mb-1">
@@ -190,7 +204,7 @@ export default function MyBookings() {
 
                         <div className="text-center">
                           <p className="text-sm text-muted-foreground mb-1">Gate</p>
-                          <p className="font-semibold text-foreground">{flight.gate || '--'}</p>
+                          <p className="font-semibold text-foreground">{flight?.gate || '--'}</p>
                         </div>
 
                         <div className="text-center">
@@ -205,7 +219,8 @@ export default function MyBookings() {
                     {/* Tracking code */}
                     <div className="mt-4 pt-4 border-t border-border">
                       <span className="text-sm text-muted-foreground">
-                        Booking Reference: <span className="font-mono font-bold text-foreground">{booking.tracking_code}</span>
+                        Booking Reference:{' '}
+                        <span className="font-mono font-bold text-foreground">{booking.tracking_code}</span>
                       </span>
                     </div>
                   </div>
