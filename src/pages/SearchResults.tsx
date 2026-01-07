@@ -172,10 +172,10 @@ export default function SearchResults() {
                 <Printer className="w-4 h-4 mr-2" />
                 Print Ticket
               </Button>
-              <Button variant="outline" size="lg" className="flex-1">
+              {/* <Button variant="outline" size="lg" className="flex-1">
                 <Download className="w-4 h-4 mr-2" />
                 Download PDF
-              </Button>
+              </Button> */}
             </div>
 
             <p className="text-center text-sm text-muted-foreground mt-6 no-print">
