@@ -6,44 +6,45 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 215 25% 15%;
+    --background: 220 20% 97%;
+    --foreground: 220 25% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
+    --card-foreground: 220 25% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover-foreground: 220 25% 10%;
 
-    --primary: 213 94% 45%;
+    --primary: 220 90% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 215 25% 25%;
+    --secondary: 220 15% 94%;
+    --secondary-foreground: 220 25% 20%;
 
-    --muted: 210 30% 94%;
-    --muted-foreground: 215 15% 50%;
+    --muted: 220 15% 92%;
+    --muted-foreground: 220 10% 45%;
 
-    --accent: 25 95% 55%;
+    --accent: 35 100% 55%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 85% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 25% 88%;
-    --input: 214 25% 88%;
-    --ring: 213 94% 45%;
+    --border: 220 15% 90%;
+    --input: 220 15% 90%;
+    --ring: 220 90% 50%;
 
-    --radius: 0.75rem;
+    --radius: 0.875rem;
 
-    /* Custom tokens */
-    --sky-gradient-start: 200 80% 70%;
-    --sky-gradient-end: 213 94% 45%;
-    --hero-overlay: 215 50% 20%;
-    --gold: 40 85% 55%;
-    --success: 142 70% 45%;
-    --ticket-bg: 45 30% 97%;
-    --ticket-border: 45 20% 85%;
+    /* Premium custom tokens */
+    --sky-gradient-start: 210 85% 60%;
+    --sky-gradient-end: 220 90% 50%;
+    --hero-overlay: 220 50% 15%;
+    --gold: 45 95% 55%;
+    --success: 150 75% 40%;
+    --ticket-bg: 45 25% 98%;
+    --ticket-border: 45 15% 88%;
+    --glass: 0 0% 100%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -52,52 +53,53 @@
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 220 90% 50%;
   }
 
   .dark {
-    --background: 215 30% 8%;
-    --foreground: 210 40% 98%;
+    --background: 220 25% 6%;
+    --foreground: 220 15% 95%;
 
-    --card: 215 30% 12%;
-    --card-foreground: 210 40% 98%;
+    --card: 220 25% 10%;
+    --card-foreground: 220 15% 95%;
 
-    --popover: 215 30% 12%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 25% 10%;
+    --popover-foreground: 220 15% 95%;
 
-    --primary: 213 94% 55%;
+    --primary: 220 90% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 215 25% 18%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 220 20% 15%;
+    --secondary-foreground: 220 15% 95%;
 
-    --muted: 215 25% 18%;
-    --muted-foreground: 215 15% 60%;
+    --muted: 220 20% 15%;
+    --muted-foreground: 220 10% 55%;
 
-    --accent: 25 95% 55%;
+    --accent: 35 100% 55%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 220 15% 95%;
 
-    --border: 215 25% 22%;
-    --input: 215 25% 22%;
-    --ring: 213 94% 55%;
+    --border: 220 20% 18%;
+    --input: 220 20% 18%;
+    --ring: 220 90% 60%;
 
-    --sky-gradient-start: 200 60% 30%;
-    --sky-gradient-end: 213 70% 25%;
-    --hero-overlay: 215 50% 10%;
-    --ticket-bg: 215 30% 15%;
-    --ticket-border: 215 25% 25%;
+    --sky-gradient-start: 210 60% 25%;
+    --sky-gradient-end: 220 70% 20%;
+    --hero-overlay: 220 50% 8%;
+    --ticket-bg: 220 25% 12%;
+    --ticket-border: 220 20% 20%;
+    --glass: 220 25% 15%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 220 90% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 220 90% 55%;
   }
 }
 
@@ -126,11 +128,11 @@
   }
 
   .card-hover {
-    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+    @apply transition-all duration-500 hover:shadow-2xl hover:-translate-y-2;
   }
 
   .glass-card {
-    @apply bg-white/90 backdrop-blur-md border border-white/20;
+    @apply bg-white/95 backdrop-blur-xl border border-white/40 shadow-2xl;
   }
 
   .ticket-paper {
@@ -147,7 +149,7 @@
   }
 
   .btn-glow {
-    box-shadow: 0 4px 20px hsl(var(--accent) / 0.4);
+    box-shadow: 0 8px 32px hsl(var(--accent) / 0.5);
   }
 
   .text-gradient {
@@ -159,6 +161,14 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+
+  .premium-shadow {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  }
+
+  .glow-ring {
+    box-shadow: 0 0 0 4px hsl(var(--primary) / 0.15);
   }
 }
 
