@@ -145,7 +145,7 @@ export default function TrackBooking() {
                       id="trackingCode"
                       value={trackingCode}
                       onChange={(e) => setTrackingCode(e.target.value.toUpperCase())}
-                      placeholder="e.g., FL5575TK"
+                      placeholder="e.g., FL2578LM"
                       className="text-lg font-mono tracking-widest pl-12 h-14 rounded-xl"
                       maxLength={10}
                     />
