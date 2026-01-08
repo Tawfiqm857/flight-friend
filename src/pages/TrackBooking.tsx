@@ -29,7 +29,7 @@ export default function TrackBooking() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowPaymentTooltip(false);
-    }, 6000);
+    }, 9000);
     return () => clearTimeout(timer);
   }, []);
 
